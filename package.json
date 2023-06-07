@@ -5,7 +5,8 @@
     "description": "��#\u0000 \u0000N\u0000o\u0000d\u0000e\u0000J\u0000S\u0000P\u0000l\u0000a\u0000y\u0000L\u0000i\u0000s\u0000t\u0000\r\u0000 \u0000",
     "main": "index.js",
     "scripts": {
-        "start": "node index"
+        "start": "node index",
+        "dev": "nodemon index.js"
     },
     "keywords": [],
     "author": "Ujjal Kumar Roy",

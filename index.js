@@ -72,7 +72,8 @@ async function run() {
         await client.connect();
 
         // collection and db name
-        const userCollections = client.db('Flavorsome-Food-School').collection('User');
+        const userCollections = client.db('FlavorsomeFoodSchool').collection('Users');
+
         // json web token
         app.post('/jwt', (req, res) => {
             try {
@@ -105,11 +106,11 @@ async function run() {
             }
         };
         // verify students
-        const verifyStudents = async (req, res, next) => {
+        const verifyStudent = async (req, res, next) => {
             try {
                 const { email } = req.user;
                 const user = await userCollections.findOne({ email });
-                if (user?.role !== 'students') {
+                if (user?.role !== 'student') {
                     return res.status(403).json({
                         success: false,
                         message: 'Forbidden Access!!',
@@ -125,11 +126,11 @@ async function run() {
             }
         };
         // verify instructors
-        const verifyInstructors = async (req, res, next) => {
+        const verifyInstructor = async (req, res, next) => {
             try {
                 const { email } = req.user;
                 const user = await userCollections.findOne({ email });
-                if (user?.role !== 'instructors') {
+                if (user?.role !== 'instructor') {
                     return res.status(403).json({
                         success: false,
                         message: 'Forbidden Access!!',
@@ -165,10 +166,10 @@ async function run() {
         // all users get route
         app.post('/users', async (req, res) => {
             try {
-                const { email } = req.query;
-                const isExitsUser = userCollections.find({ email });
+                const { email } = req.body;
+                const isExitsUser = await userCollections.findOne({ email });
                 if (isExitsUser) {
-                    return res.send([]);
+                    return res.send({ message: 'Email is Already Exists' });
                 }
                 const user = await userCollections.insertOne({ ...req.body });
                 res.status(200).json({

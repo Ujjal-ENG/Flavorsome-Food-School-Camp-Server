@@ -171,7 +171,7 @@ async function run() {
                 if (isExitsUser) {
                     return res.send({ message: 'Email is Already Exists' });
                 }
-                const user = await userCollections.insertOne({ ...req.body });
+                const user = await userCollections.insertOne({ ...req.body, role: 'student' });
                 res.status(200).json({
                     success: true,
                     message: 'Successfully added the users!!',

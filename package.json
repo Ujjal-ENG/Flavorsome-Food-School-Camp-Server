@@ -1,19 +1,22 @@
 {
-    "name": "nodejsplaylist",
+    "name": "flavorsome-food-school",
     "version": "1.0.0",
+    "type": "module",
     "description": "��#\u0000 \u0000N\u0000o\u0000d\u0000e\u0000J\u0000S\u0000P\u0000l\u0000a\u0000y\u0000L\u0000i\u0000s\u0000t\u0000\r\u0000 \u0000",
     "main": "index.js",
     "scripts": {
         "start": "node index"
     },
     "keywords": [],
-    "author": "",
+    "author": "Ujjal Kumar Roy",
     "license": "ISC",
     "dependencies": {
         "cors": "^2.8.5",
         "dotenv": "^16.1.4",
         "eslint-config-airbnb": "^19.0.4",
-        "express": "^4.18.2"
+        "express": "^4.18.2",
+        "mongodb": "^5.6.0",
+        "nodemon": "^2.0.22"
     },
     "devDependencies": {
         "eslint": "^8.37.0",

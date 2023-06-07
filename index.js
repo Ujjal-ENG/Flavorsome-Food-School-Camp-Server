@@ -269,6 +269,21 @@ async function run() {
                 console.log(error);
             }
         });
+        // get instructor role
+        app.get('/users/instructor/:email', verifyJWT, async (req, res) => {
+            try {
+                const { email } = req.params;
+                const decodedEmail = req.user.email;
+                if (decodedEmail !== email) {
+                    return res.send({ student: false });
+                }
+                const user = await userCollections.findOne({ email });
+                const result = { instructor: user?.role === 'instructor' };
+                res.send(result);
+            } catch (error) {
+                console.log(error);
+            }
+        });
 
         // update user as student
 

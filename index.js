@@ -42,10 +42,27 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-      await client.connect();
-      
+        await client.connect();
 
-      
+        // collection and db name
+        const userCollections = client.db('Flavorsome-Food-School').collection('User');
+
+        // users related routes
+        app.get('/users', async (req, res) => {
+            try {
+                const allUsers = await userCollections.find().toArray();
+                res.status(200).json({
+                    success: true,
+                    message: 'Get all The Users',
+                    data: allUsers,
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal server error from User Get Request!!',
+                });
+            }
+        });
 
         // Send a ping to confirm a successful connection
         await client.db('admin').command({ ping: 1 });

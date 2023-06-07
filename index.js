@@ -185,6 +185,24 @@ async function run() {
             }
         });
 
+        // get student role
+        app.get('/users/student/:email', verifyJWT, async (req, res) => {
+            try {
+                const { email } = req.params;
+                const decodedEmail = req.user.email;
+                if (decodedEmail !== email) {
+                    return res.send({ student: false });
+                }
+                const user = await userCollections.findOne({ email });
+                const result = { student: user?.role === 'student' };
+                res.send(result);
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
+        // update user as student
+
         // Send a ping to confirm a successful connection
         await client.db('admin').command({ ping: 1 });
         console.log('Pinged your deployment. You successfully connected to MongoDB!');

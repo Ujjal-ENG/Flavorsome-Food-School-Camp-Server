@@ -84,6 +84,67 @@ async function run() {
             }
         });
 
+        // verify admin
+        const verifyAdmin = async (req, res, next) => {
+            try {
+                const { email } = req.user;
+                const user = await userCollections.findOne({ email });
+                if (user?.role !== 'admin') {
+                    return res.status(403).json({
+                        success: false,
+                        message: 'Forbidden Access!!',
+                    });
+                }
+                next();
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal Server Error',
+                    error: error.message,
+                });
+            }
+        };
+        // verify students
+        const verifyStudents = async (req, res, next) => {
+            try {
+                const { email } = req.user;
+                const user = await userCollections.findOne({ email });
+                if (user?.role !== 'students') {
+                    return res.status(403).json({
+                        success: false,
+                        message: 'Forbidden Access!!',
+                    });
+                }
+                next();
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal Server Error',
+                    error: error.message,
+                });
+            }
+        };
+        // verify instructors
+        const verifyInstructors = async (req, res, next) => {
+            try {
+                const { email } = req.user;
+                const user = await userCollections.findOne({ email });
+                if (user?.role !== 'instructors') {
+                    return res.status(403).json({
+                        success: false,
+                        message: 'Forbidden Access!!',
+                    });
+                }
+                next();
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal Server Error',
+                    error: error.message,
+                });
+            }
+        };
+
         // users related routes
         // all users get route
         app.get('/users', async (req, res) => {

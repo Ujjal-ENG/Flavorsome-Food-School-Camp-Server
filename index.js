@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable no-tabs */
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -237,7 +238,7 @@ async function run() {
                 };
                 const result = await userCollections.updateOne(
                     { _id: new ObjectId(id) },
-                    updatedDoc,
+                    updatedDoc
                 );
                 res.status(200).json({
                     success: true,

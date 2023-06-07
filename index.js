@@ -48,6 +48,7 @@ async function run() {
         const userCollections = client.db('Flavorsome-Food-School').collection('User');
 
         // users related routes
+        // all users get route
         app.get('/users', async (req, res) => {
             try {
                 const allUsers = await userCollections.find().toArray();
@@ -60,6 +61,27 @@ async function run() {
                 res.status(500).json({
                     success: false,
                     message: 'Internal server error from User Get Request!!',
+                });
+            }
+        });
+        // all users get route
+        app.post('/users', async (req, res) => {
+            try {
+                const { email } = req.query;
+                const isExitsUser = userCollections.find({ email });
+                if (isExitsUser) {
+                    return res.send([]);
+                }
+                const user = await userCollections.insertOne({ ...req.body });
+                res.status(200).json({
+                    success: true,
+                    message: 'Successfully added the users!!',
+                    data: user,
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal server error from User POST Request!!',
                 });
             }
         });

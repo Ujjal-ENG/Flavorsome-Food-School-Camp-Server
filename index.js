@@ -74,6 +74,7 @@ async function run() {
 
         // collection and db name
         const userCollections = client.db('FlavorsomeFoodSchool').collection('Users');
+        const classCollections = client.db('FlavorsomeFoodSchool').collection('Classes');
 
         // json web token
         app.post('/jwt', (req, res) => {
@@ -285,7 +286,34 @@ async function run() {
             }
         });
 
-        // update user as student
+        // Class Related Query
+        // all classes  get related routes
+        app.get('/classes', verifyJWT, verifyInstructor, async (req, res) => {
+            try {
+                const allClasses = await classCollections.find().toArray();
+                res.status(200).json({
+                    success: true,
+                    data: allClasses,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
+        // class created route
+        app.post('/classes', verifyJWT, verifyInstructor, async (req, res) => {
+            try {
+                const classes = await classCollections.insertOne({ ...req.body });
+                if (classes.insertedId === 1) {
+                    res.status(200).json({
+                        success: true,
+                        data: classes,
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        });
 
         // Send a ping to confirm a successful connection
         await client.db('admin').command({ ping: 1 });

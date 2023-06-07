@@ -1,8 +1,9 @@
+/* eslint-disable no-tabs */
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import jwt from 'jsonwebtoken';
 import { MongoClient, ServerApiVersion } from 'mongodb';
-
 // config the dotenv files
 dotenv.config();
 // declare PORT
@@ -26,6 +27,32 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
     res.status(200).json({ message: 'Flavorsome-Food-School health is good now!!' });
 });
+
+// jwt middleware
+const verifyJWT = async (req, res, next) => {
+    try {
+        const { authorization } = req.headers;
+        if (!authorization) {
+            return res.status(401).json({
+                success: false,
+                message: 'Unauthorized Access from Server!!',
+            });
+        }
+        const token = authorization.split(' ')[1];
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decode) => {
+            if (err) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Unauthorized Access!!',
+                });
+            }
+            req.user = decode;
+            next();
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
 // mongoDB Configurations
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.zzrczzq.mongodb.net/?retryWrites=true&w=majority`;
@@ -46,6 +73,16 @@ async function run() {
 
         // collection and db name
         const userCollections = client.db('Flavorsome-Food-School').collection('User');
+        // json web token
+        app.post('/jwt', (req, res) => {
+            try {
+                const user = req.body;
+                const token = jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '7d' });
+                res.json({ token });
+            } catch (error) {
+                console.log(error);
+            }
+        });
 
         // users related routes
         // all users get route

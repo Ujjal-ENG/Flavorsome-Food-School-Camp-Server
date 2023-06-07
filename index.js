@@ -201,6 +201,39 @@ async function run() {
             }
         });
 
+        // all users get
+        app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
+            try {
+                const allusers = await userCollections.find().toArray();
+                res.status(200).json({
+                    success: true,
+                    data: allusers,
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Error occurred when Updating the Users data!!',
+                    error: error.message,
+                });
+            }
+        });
+
+        // get admin role
+        app.get('/users/admin/:email', verifyJWT, async (req, res) => {
+            try {
+                const { email } = req.params;
+                const decodedEmail = req.user.email;
+                if (decodedEmail !== email) {
+                    return res.send({ student: false });
+                }
+                const user = await userCollections.findOne({ email });
+                const result = { admin: user?.role === 'admin' };
+                res.send(result);
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
         // update user as student
 
         // Send a ping to confirm a successful connection

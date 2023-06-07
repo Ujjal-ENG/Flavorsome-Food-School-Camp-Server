@@ -288,9 +288,11 @@ async function run() {
 
         // Class Related Query
         // all classes  get related routes
-        app.get('/classes', verifyJWT, verifyInstructor, async (req, res) => {
+        app.get('/classes/:email', verifyJWT, verifyInstructor, async (req, res) => {
             try {
-                const allClasses = await classCollections.find().toArray();
+                const { email } = req.params;
+                console.log(email);
+                const allClasses = await classCollections.find({ email }).toArray();
                 res.status(200).json({
                     success: true,
                     data: allClasses,
@@ -304,12 +306,10 @@ async function run() {
         app.post('/classes', verifyJWT, verifyInstructor, async (req, res) => {
             try {
                 const classes = await classCollections.insertOne({ ...req.body });
-                if (classes.insertedId === 1) {
-                    res.status(200).json({
-                        success: true,
-                        data: classes,
-                    });
-                }
+                res.status(201).json({
+                    success: true,
+                    data: classes,
+                });
             } catch (error) {
                 console.log(error);
             }

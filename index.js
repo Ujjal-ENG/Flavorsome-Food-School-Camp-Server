@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 // config the dotenv files
 dotenv.config();
 // declare PORT
@@ -212,8 +212,43 @@ async function run() {
             } catch (error) {
                 res.status(500).json({
                     success: false,
-                    message: 'Error occurred when Updating the Users data!!',
+                    message: 'Error occurred when geting the Users data!!',
                     error: error.message,
+                });
+            }
+        });
+
+        // update user role
+        app.patch('/users/admin/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            try {
+                const { id } = req.params;
+                const { role } = req.body;
+
+                if (role !== 'admin' && role !== 'instructor') {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Invalid role specified!!',
+                    });
+                }
+                const updatedDoc = {
+                    $set: {
+                        role,
+                    },
+                };
+                const result = await userCollections.updateOne(
+                    { _id: new ObjectId(id) },
+                    updatedDoc,
+                );
+                res.status(200).json({
+                    success: true,
+                    message: 'User is Updated Successfully!!',
+                    data: result,
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Error occurred when Updating the Users data!!',
+                    error: error.message, // Include the error message in the response
                 });
             }
         });

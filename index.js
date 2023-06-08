@@ -83,6 +83,9 @@ async function run() {
         const studentSelectedClassesCollections = client
             .db('FlavorsomeFoodSchool')
             .collection('SelectedClasses');
+        const studentEnrolledClassesCollections = client
+            .db('FlavorsomeFoodSchool')
+            .collection('EnrolledClasses');
 
         // json web token
         app.post('/jwt', (req, res) => {
@@ -425,7 +428,7 @@ async function run() {
         });
 
         // payment api integration in backend
-        app.post('/create-payment-intent', async (req, res) => {
+        app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const { price } = req.body;
             const amount = price * 100;
             // Create a PaymentIntent with the order amount and currency
@@ -438,6 +441,46 @@ async function run() {
             res.send({
                 clientSecret: paymentIntent.client_secret,
             });
+        });
+
+        // payment information
+        app.post('/payments', async (req, res) => {
+            try {
+                const payment = await paymentCollections.insertOne({ ...req.body });
+
+                const query = { _id: req.body.selectedItemId };
+                const deleteResult = await studentSelectedClassesCollections.deleteOne(query);
+
+                const classResult = await classCollections.findOne({
+                    _id: new ObjectId(req.body.classId),
+                });
+                const resultUpdateInEnrolled = await studentEnrolledClassesCollections.insertOne({
+                    ...classResult,
+                });
+                classResult.availableSeats -= req.body.quantity;
+                const updatedDoc = {
+                    $set: {
+                        ...classResult,
+                    },
+                };
+                const updateClassResult = await classCollections.updateOne(
+                    {
+                        _id: new ObjectId(req.body.classId),
+                    },
+                    updatedDoc
+                );
+
+                res.status(201).json({
+                    success: true,
+                    data: payment,
+                    deleteResult,
+                    classResult,
+                    updateClassResult,
+                    resultUpdateInEnrolled,
+                });
+            } catch (error) {
+                console.log(error);
+            }
         });
 
         // Send a ping to confirm a successful connection

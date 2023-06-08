@@ -427,6 +427,22 @@ async function run() {
             }
         });
 
+        // my enrolled classes
+        app.get('/enrolled-classes/:studentEmail', verifyJWT, verifyStudent, async (req, res) => {
+            try {
+                const { studentEmail } = req.params;
+                const result = await studentEnrolledClassesCollections
+                    .find({ studentEmail })
+                    .toArray();
+                res.status(200).json({
+                    success: true,
+                    data: result,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
         // payment api integration in backend
         app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const { price } = req.body;
@@ -456,6 +472,7 @@ async function run() {
                 });
                 const resultUpdateInEnrolled = await studentEnrolledClassesCollections.insertOne({
                     ...classResult,
+                    enrolledStudent: req.body.email,
                 });
                 classResult.availableSeats -= req.body.quantity;
                 const updatedDoc = {

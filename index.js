@@ -428,20 +428,26 @@ async function run() {
         });
 
         // my enrolled classes
-        app.get('/enrolled-classes/:studentEmail', verifyJWT, verifyStudent, async (req, res) => {
-            try {
-                const { studentEmail } = req.params;
-                const result = await studentEnrolledClassesCollections
-                    .find({ studentEmail })
-                    .toArray();
-                res.status(200).json({
-                    success: true,
-                    data: result,
-                });
-            } catch (error) {
-                console.log(error);
+        app.get(
+            '/enrolled-classes/:enrolledStudent',
+            verifyJWT,
+            verifyStudent,
+            async (req, res) => {
+                try {
+                    const { enrolledStudent } = req.params;
+
+                    const result = await studentEnrolledClassesCollections
+                        .find({ enrolledStudent })
+                        .toArray();
+                    res.status(200).json({
+                        success: true,
+                        data: result,
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             }
-        });
+        );
 
         // payment api integration in backend
         app.post('/create-payment-intent', verifyJWT, async (req, res) => {

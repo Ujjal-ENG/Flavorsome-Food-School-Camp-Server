@@ -395,7 +395,7 @@ async function run() {
                 const result = await studentSelectedClassesCollections
                     .find({ studentEmail })
                     .toArray();
-                res.status(201).json({
+                res.status(200).json({
                     success: true,
                     data: result,
                 });
@@ -403,6 +403,27 @@ async function run() {
                 console.log(error);
             }
         });
+        // my selected classes
+        app.delete(
+            '/selected-classes/:studentEmail',
+            verifyJWT,
+            verifyStudent,
+            async (req, res) => {
+                try {
+                    const { studentEmail } = req.params;
+                    const result = await studentSelectedClassesCollections.deleteOne({
+                        studentEmail,
+                    });
+
+                    res.status(200).json({
+                        success: true,
+                        data: result,
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        );
 
         // Send a ping to confirm a successful connection
         await client.db('admin').command({ ping: 1 });

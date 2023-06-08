@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable comma-dangle */
 /* eslint-disable no-tabs */
 import cors from 'cors';
@@ -372,7 +373,13 @@ async function run() {
         // my selected classes
         app.post('/selected-classes', verifyJWT, verifyStudent, async (req, res) => {
             try {
-                const result = await studentSelectedClassesCollections.insertOne({ ...req.body });
+                const { studentEmail } = req.body;
+                const selectedClass = {
+                    ...req.body,
+                    _id: `${studentEmail}+${req.body._id}`,
+                };
+                console.log(selectedClass);
+                const result = await studentSelectedClassesCollections.insertOne(selectedClass);
                 res.status(201).json({
                     success: true,
                     data: result,

@@ -6,8 +6,11 @@ import dotenv from 'dotenv';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
+import stripePackage from 'stripe';
 // config the dotenv files
 dotenv.config();
+
+const stripe = stripePackage(process.env.PAYMENT_KEY);
 // declare PORT
 const PORT = process.env.PORT || 8080;
 
@@ -74,6 +77,7 @@ async function run() {
         await client.connect();
 
         // collection and db name
+        const paymentCollections = client.db('FlavorsomeFoodSchool').collection('Payments');
         const userCollections = client.db('FlavorsomeFoodSchool').collection('Users');
         const classCollections = client.db('FlavorsomeFoodSchool').collection('Classes');
         const studentSelectedClassesCollections = client
@@ -418,6 +422,22 @@ async function run() {
             } catch (error) {
                 console.log(error);
             }
+        });
+
+        // payment api integration in backend
+        app.post('/create-payment-intent', async (req, res) => {
+            const { price } = req.body;
+            const amount = price * 100;
+            // Create a PaymentIntent with the order amount and currency
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount,
+                currency: 'usd',
+                payment_method_types: ['card'],
+            });
+
+            res.send({
+                clientSecret: paymentIntent.client_secret,
+            });
         });
 
         // Send a ping to confirm a successful connection

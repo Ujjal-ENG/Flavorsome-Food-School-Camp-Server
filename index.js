@@ -75,6 +75,9 @@ async function run() {
         // collection and db name
         const userCollections = client.db('FlavorsomeFoodSchool').collection('Users');
         const classCollections = client.db('FlavorsomeFoodSchool').collection('Classes');
+        const studentSelectedClassesCollections = client
+            .db('FlavorsomeFoodSchool')
+            .collection('SelectedClasses');
 
         // json web token
         app.post('/jwt', (req, res) => {
@@ -359,6 +362,20 @@ async function run() {
                 res.status(201).json({
                     success: true,
                     data: classes,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
+        // student selected classes
+        // my selected classes
+        app.post('/selected-classes', verifyJWT, verifyStudent, async (req, res) => {
+            try {
+                const result = await studentSelectedClassesCollections.insertOne({ ...req.body });
+                res.status(201).json({
+                    success: true,
+                    data: result,
                 });
             } catch (error) {
                 console.log(error);

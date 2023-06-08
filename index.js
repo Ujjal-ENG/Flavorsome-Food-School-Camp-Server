@@ -378,8 +378,23 @@ async function run() {
                     ...req.body,
                     _id: `${studentEmail}+${req.body._id}`,
                 };
-                console.log(selectedClass);
+
                 const result = await studentSelectedClassesCollections.insertOne(selectedClass);
+                res.status(201).json({
+                    success: true,
+                    data: result,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        });
+        // my selected classes
+        app.get('/selected-classes/:studentEmail', verifyJWT, verifyStudent, async (req, res) => {
+            try {
+                const { studentEmail } = req.params;
+                const result = await studentSelectedClassesCollections
+                    .find({ studentEmail })
+                    .toArray();
                 res.status(201).json({
                     success: true,
                     data: result,

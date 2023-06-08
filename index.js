@@ -301,6 +301,17 @@ async function run() {
                 console.log(error);
             }
         });
+        app.get('/classes', async (req, res) => {
+            try {
+                const allClasses = await classCollections.find({ status: 'approved' }).toArray();
+                res.status(200).json({
+                    success: true,
+                    data: allClasses,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        });
 
         // all classes  get related routes with admin
         app.get('/classes', verifyJWT, verifyAdmin, async (req, res) => {

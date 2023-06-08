@@ -302,6 +302,45 @@ async function run() {
             }
         });
 
+        // all classes  get related routes with admin
+        app.get('/classes', verifyJWT, verifyAdmin, async (req, res) => {
+            try {
+                const allClasses = await classCollections.find().toArray();
+                res.status(200).json({
+                    success: true,
+                    data: allClasses,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        });
+        // all classes  patch related routes with admin
+        app.patch('/classes/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            try {
+                const { id } = req.params;
+
+                const { status, feedback } = req.body;
+                const updatedDoc = {
+                    $set: {
+                        ...(status && { status }),
+                        ...(feedback && { feedback }),
+                    },
+                };
+
+                const updatedClass = await classCollections.updateOne(
+                    { _id: new ObjectId(id) },
+                    updatedDoc
+                );
+
+                res.status(200).json({
+                    success: true,
+                    data: updatedClass,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
         // class created route
         app.post('/classes', verifyJWT, verifyInstructor, async (req, res) => {
             try {

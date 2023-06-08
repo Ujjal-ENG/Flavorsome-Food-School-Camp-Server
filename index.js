@@ -404,26 +404,21 @@ async function run() {
             }
         });
         // my selected classes
-        app.delete(
-            '/selected-classes/:studentEmail',
-            verifyJWT,
-            verifyStudent,
-            async (req, res) => {
-                try {
-                    const { studentEmail } = req.params;
-                    const result = await studentSelectedClassesCollections.deleteOne({
-                        studentEmail,
-                    });
+        app.delete('/selected-classes/:id', verifyJWT, verifyStudent, async (req, res) => {
+            try {
+                const { id } = req.params;
+                const result = await studentSelectedClassesCollections.deleteOne({
+                    _id: new ObjectId(id),
+                });
 
-                    res.status(200).json({
-                        success: true,
-                        data: result,
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
+                res.status(200).json({
+                    success: true,
+                    data: result,
+                });
+            } catch (error) {
+                console.log(error);
             }
-        );
+        });
 
         // Send a ping to confirm a successful connection
         await client.db('admin').command({ ping: 1 });

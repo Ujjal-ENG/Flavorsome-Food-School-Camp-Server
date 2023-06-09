@@ -467,6 +467,28 @@ async function run() {
             }
         });
 
+        // popularInstructors
+        app.get('/popular-instructors', async (req, res) => {
+            try {
+                const result = await classCollections
+                    .find()
+                    .sort({ availableSeats: 1 })
+                    .limit(6)
+                    .toArray();
+
+                const popularInstructors = await userCollections
+                    .find({ email: { $in: result.map((el) => el.email) } })
+                    .toArray();
+                res.status(200).json({
+                    success: true,
+                    data: popularInstructors,
+                    result,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
         // payment api integration in backend
         app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const { price } = req.body;

@@ -176,6 +176,7 @@ async function run() {
                 });
             }
         });
+
         // all users get route
         app.post('/users', async (req, res) => {
             try {
@@ -210,7 +211,10 @@ async function run() {
                 const result = { student: user?.role === 'student' };
                 res.send(result);
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
 
@@ -278,9 +282,13 @@ async function run() {
                 const result = { admin: user?.role === 'admin' };
                 res.send(result);
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
+
         // get instructor role
         app.get('/users/instructor/:email', verifyJWT, async (req, res) => {
             try {
@@ -293,7 +301,10 @@ async function run() {
                 const result = { instructor: user?.role === 'instructor' };
                 res.send(result);
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
 
@@ -309,9 +320,14 @@ async function run() {
                     data: allClasses,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
+
+        // only approved classes
         app.get('/classes', async (req, res) => {
             try {
                 const allClasses = await classCollections.find({ status: 'approved' }).toArray();
@@ -320,7 +336,10 @@ async function run() {
                     data: allClasses,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
 
@@ -333,9 +352,13 @@ async function run() {
                     data: allClasses,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
+
         // all classes  patch related routes with admin
         app.patch('/classes/:id', verifyJWT, verifyAdmin, async (req, res) => {
             try {
@@ -359,7 +382,10 @@ async function run() {
                     data: updatedClass,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
 
@@ -372,7 +398,10 @@ async function run() {
                     data: classes,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
 
@@ -392,9 +421,13 @@ async function run() {
                     data: result,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
+
         // my selected classes
         app.get('/selected-classes/:studentEmail', verifyJWT, verifyStudent, async (req, res) => {
             try {
@@ -407,9 +440,13 @@ async function run() {
                     data: result,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
+
         // my selected classes
         app.delete('/selected-classes/:id', verifyJWT, verifyStudent, async (req, res) => {
             try {
@@ -423,7 +460,10 @@ async function run() {
                     data: result,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
 
@@ -444,7 +484,10 @@ async function run() {
                         data: result,
                     });
                 } catch (error) {
-                    console.log(error);
+                    res.status(500).json({
+                        success: false,
+                        error: `Internal Server Error${error}`,
+                    });
                 }
             }
         );
@@ -463,7 +506,10 @@ async function run() {
                     data: result,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
 
@@ -485,7 +531,20 @@ async function run() {
                     result,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
+            }
+        });
+
+        app.get('/all-instructors', async (req, res) => {
+            try {
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
             }
         });
 

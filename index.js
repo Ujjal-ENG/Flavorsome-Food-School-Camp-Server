@@ -219,7 +219,7 @@ async function run() {
         });
 
         // all users get
-        app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
+        app.get('/users-admin', verifyJWT, verifyAdmin, async (req, res) => {
             try {
                 const allusers = await userCollections.find().toArray();
                 res.status(200).json({
@@ -520,7 +520,7 @@ async function run() {
         );
 
         // popular class
-        app.get('/all-classes', async (req, res) => {
+        app.get('/all-classes-popular', async (req, res) => {
             try {
                 const result = await classCollections
                     .find()

@@ -313,7 +313,6 @@ async function run() {
         app.get('/classes/:email', verifyJWT, verifyInstructor, async (req, res) => {
             try {
                 const { email } = req.params;
-                console.log(email);
                 const allClasses = await classCollections.find({ email }).toArray();
                 res.status(200).json({
                     success: true,

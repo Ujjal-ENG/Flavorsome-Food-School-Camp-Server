@@ -540,6 +540,11 @@ async function run() {
 
         app.get('/all-instructors', async (req, res) => {
             try {
+                const allInstructors = await userCollections.find({ role: 'instructor' }).toArray();
+                res.status(200).json({
+                    success: true,
+                    data: allInstructors,
+                });
             } catch (error) {
                 res.status(500).json({
                     success: false,

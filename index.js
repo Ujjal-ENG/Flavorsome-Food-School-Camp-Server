@@ -344,7 +344,7 @@ async function run() {
         });
 
         // all classes  get related routes with admin
-        app.get('/classes', verifyJWT, verifyAdmin, async (req, res) => {
+        app.get('/all-classes-admin', verifyJWT, verifyAdmin, async (req, res) => {
             try {
                 const allClasses = await classCollections.find().toArray();
                 res.status(200).json({

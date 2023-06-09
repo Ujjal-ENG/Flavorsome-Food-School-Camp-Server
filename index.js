@@ -389,6 +389,33 @@ async function run() {
             }
         });
 
+        // all classes  patch related routes with instructors
+        app.patch('/classes/:id', verifyJWT, verifyInstructor, async (req, res) => {
+            try {
+                const { id } = req.params;
+                const updatedDoc = {
+                    $set: {
+                        ...req.body,
+                    },
+                };
+
+                const updatedClass = await classCollections.updateOne(
+                    { _id: new ObjectId(id) },
+                    updatedDoc
+                );
+
+                res.status(200).json({
+                    success: true,
+                    data: updatedClass,
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    error: `Internal Server Error${error}`,
+                });
+            }
+        });
+
         // class created route
         app.post('/classes', verifyJWT, verifyInstructor, async (req, res) => {
             try {

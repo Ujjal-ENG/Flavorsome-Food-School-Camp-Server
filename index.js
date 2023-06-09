@@ -449,6 +449,24 @@ async function run() {
             }
         );
 
+        // popular class
+        app.get('/all-classes', async (req, res) => {
+            try {
+                const result = await classCollections
+                    .find()
+                    .sort({ availableSeats: 1 })
+                    .limit(6)
+                    .toArray();
+
+                res.status(200).json({
+                    success: true,
+                    data: result,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
         // payment api integration in backend
         app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const { price } = req.body;

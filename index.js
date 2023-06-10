@@ -610,7 +610,11 @@ async function run() {
                     ...classResult,
                     enrolledStudent: req.body.email,
                 });
+                classResult.enrolledStudents = classResult.enrolledStudents
+                    ? classResult.enrolledStudents + 1
+                    : 1;
                 classResult.availableSeats -= req.body.quantity;
+
                 const updatedDoc = {
                     $set: {
                         ...classResult,

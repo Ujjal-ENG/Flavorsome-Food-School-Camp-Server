@@ -389,7 +389,7 @@ async function run() {
         });
 
         // all classes  patch related routes with instructors
-        app.patch('/classes/:id', verifyJWT, verifyInstructor, async (req, res) => {
+        app.patch('/classes-instructor/:id', verifyJWT, verifyInstructor, async (req, res) => {
             try {
                 const { id } = req.params;
                 const updatedDoc = {

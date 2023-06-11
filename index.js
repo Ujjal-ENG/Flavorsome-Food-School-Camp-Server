@@ -603,7 +603,7 @@ async function run() {
         });
 
         // payment information
-        app.post('/payments', async (req, res) => {
+        app.post('/payments', verifyJWT, async (req, res) => {
             try {
                 const payment = await paymentCollections.insertOne({ ...req.body });
 
@@ -643,7 +643,33 @@ async function run() {
                     resultUpdateInEnrolled,
                 });
             } catch (error) {
-                console.log(error);
+                res.status(500).json({
+                    success: false,
+                    error: 'An error occurred while posting payment.',
+                });
+            }
+        });
+
+        // get payment information
+        app.get('/payments', verifyJWT, async (req, res) => {
+            try {
+                const { email } = req.query;
+                if (!email) {
+                    return res.send([]);
+                }
+                const results = await paymentCollections
+                    .find({ email })
+                    .sort({ date: -1 })
+                    .toArray();
+                res.status(200).json({
+                    success: true,
+                    data: results,
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    error: 'An error occurred while fetching payment history.',
+                });
             }
         });
 

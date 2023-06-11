@@ -111,7 +111,7 @@ async function run() {
                 }
                 next();
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     message: 'Internal Server Error',
                     error: error.message,
@@ -131,7 +131,7 @@ async function run() {
                 }
                 next();
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     message: 'Internal Server Error',
                     error: error.message,
@@ -151,7 +151,7 @@ async function run() {
                 }
                 next();
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     message: 'Internal Server Error',
                     error: error.message,
@@ -170,7 +170,7 @@ async function run() {
                     data: allUsers,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     message: 'Internal server error from User Get Request!!',
                 });
@@ -192,7 +192,7 @@ async function run() {
                     data: user,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     message: 'Internal server error from User POST Request!!',
                 });
@@ -211,7 +211,7 @@ async function run() {
                 const result = { student: user?.role === 'student' };
                 res.send(result);
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -227,7 +227,7 @@ async function run() {
                     data: allusers,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     message: 'Error occurred when geting the Users data!!',
                     error: error.message,
@@ -262,7 +262,7 @@ async function run() {
                     data: result,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     message: 'Error occurred when Updating the Users data!!',
                     error: error.message, // Include the error message in the response
@@ -276,13 +276,13 @@ async function run() {
                 const { email } = req.params;
                 const decodedEmail = req.user.email;
                 if (decodedEmail !== email) {
-                    return res.send({ student: false });
+                    return res.send({ admin: false });
                 }
                 const user = await userCollections.findOne({ email });
                 const result = { admin: user?.role === 'admin' };
                 res.send(result);
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -295,13 +295,13 @@ async function run() {
                 const { email } = req.params;
                 const decodedEmail = req.user.email;
                 if (decodedEmail !== email) {
-                    return res.send({ student: false });
+                    return res.send({ instructor: false });
                 }
                 const user = await userCollections.findOne({ email });
                 const result = { instructor: user?.role === 'instructor' };
                 res.send(result);
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -319,7 +319,7 @@ async function run() {
                     data: allClasses,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -335,7 +335,7 @@ async function run() {
                     data: allClasses,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -358,7 +358,7 @@ async function run() {
                     data: allClasses,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -388,7 +388,7 @@ async function run() {
                     data: updatedClass,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -415,7 +415,7 @@ async function run() {
                     data: updatedClass,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -431,7 +431,7 @@ async function run() {
                     data: classes,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -454,7 +454,7 @@ async function run() {
                     data: result,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -473,7 +473,7 @@ async function run() {
                     data: result,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -493,7 +493,7 @@ async function run() {
                     data: result,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -517,7 +517,7 @@ async function run() {
                         data: result,
                     });
                 } catch (error) {
-                    res.status(500).json({
+                    res.status(200).json({
                         success: false,
                         error: `Internal Server Error${error}`,
                     });
@@ -539,7 +539,7 @@ async function run() {
                     data: result,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -564,7 +564,7 @@ async function run() {
                     result,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -579,7 +579,7 @@ async function run() {
                     data: allInstructors,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: `Internal Server Error${error}`,
                 });
@@ -643,7 +643,7 @@ async function run() {
                     resultUpdateInEnrolled,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: 'An error occurred while posting payment.',
                 });
@@ -666,7 +666,7 @@ async function run() {
                     data: results,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: 'An error occurred while fetching payment history.',
                 });

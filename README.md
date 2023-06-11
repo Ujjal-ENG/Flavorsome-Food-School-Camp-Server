@@ -106,7 +106,7 @@ For more detailed information about the code and routes, please refer to the sou
 
 ## Live Server Site Link
 
-You can visit the Live Server Site at [https://flavorsome-food-school-server.vercel.app/]
+You can visit the Live Server Site at [http://localhost:8080/]
 
 ## Author
 

@@ -74,7 +74,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        // await client.connect();
+        await client.connect();
 
         // collection and db name
         const paymentCollections = client.db('FlavorsomeFoodSchool').collection('Payments');
@@ -613,15 +613,17 @@ async function run() {
                 const classResult = await classCollections.findOne({
                     _id: new ObjectId(req.body.classId),
                 });
+
                 const resultUpdateInEnrolled = await studentEnrolledClassesCollections.insertOne({
                     ...classResult,
+                    _id: new ObjectId(),
                     enrolledStudent: req.body.email,
                 });
+
                 classResult.enrolledStudents = classResult.enrolledStudents
                     ? classResult.enrolledStudents + 1
                     : 1;
                 classResult.availableSeats -= req.body.quantity;
-
                 const updatedDoc = {
                     $set: {
                         ...classResult,
@@ -643,10 +645,11 @@ async function run() {
                     resultUpdateInEnrolled,
                 });
             } catch (error) {
-                res.status(200).json({
+                res.status(500).json({
                     success: false,
                     error: 'An error occurred while posting payment.',
                 });
+                console.log(error);
             }
         });
 

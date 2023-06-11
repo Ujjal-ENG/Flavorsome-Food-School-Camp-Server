@@ -645,7 +645,7 @@ async function run() {
                     resultUpdateInEnrolled,
                 });
             } catch (error) {
-                res.status(500).json({
+                res.status(200).json({
                     success: false,
                     error: 'An error occurred while posting payment.',
                 });

@@ -84,8 +84,8 @@ const transporter = nodemailer.createTransport(mg(auth));
 const sendConfirmationEmail = (payment) => {
     transporter.sendMail(
         {
-            from: 'Mailgun Sandbox <postmaster@sandboxfa552eb09ffd4e288f1d1fcb21b7b486.mailgun.org>',
-            to: ['ujjalroy7862@gmail.com'], // recipient email
+            from: 'flavorsome|food|school|authority@gmail.com', // verified sender email
+            to: payment?.email, // recipient email
             subject: 'Successful Purchase Confirmation - Flavorsome Food School Classes', // Subject line
             text: `Dear Customer,
 

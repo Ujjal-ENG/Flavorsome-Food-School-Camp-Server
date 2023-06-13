@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
+import nodemailer from 'nodemailer';
 import stripePackage from 'stripe';
 // config the dotenv files
 dotenv.config();
@@ -58,6 +59,62 @@ const verifyJWT = async (req, res, next) => {
         console.log(error);
     }
 };
+
+// nodemailer transporter
+const transporter = nodemailer.createTransport({
+    host: 'smtp.sendgrid.net',
+    port: 587,
+    auth: {
+        user: 'apikey',
+        pass: process.env.SENDGRID_API_KEY,
+    },
+});
+
+// send email for payment confirmation
+const sendConfirmationEmail = (payment) => {
+    transporter.sendMail(
+        {
+            from: 'flavorsome|food|school|authority@gmail.com', // verified sender email
+            to: payment?.email, // recipient email
+            subject: 'Successful Purchase Confirmation - Flavorsome Food School Classes', // Subject line
+            text: `Dear Customer,
+
+            Congratulations on successfully purchasing the Food Classes from Flavorsome Food School! We are excited to have you as a part of our culinary learning community.
+            
+            Order Details:
+            - Transaction ID: ${payment?.transactionsId}
+            - Date of Purchase: ${payment?.date}
+            
+            Please keep this email for your records.
+            
+            If you have any questions or need further assistance, please don't hesitate to contact us. We look forward to seeing you in the upcoming classes!
+            
+            Best regards,
+            Flavorsome Food School`,
+            html: `<div class="font-sans">
+                <p class="text-lg">Dear Customer,</p>
+                <p class="text-lg mt-4">Congratulations on successfully purchasing the Food Classes from Flavorsome Food School! We are excited to have you as a part of our culinary learning community.</p>
+                <p class="font-bold mt-6">Order Details:</p>
+                <ul class="list-disc list-inside mt-2">
+                    <li>Transaction ID: ${payment?.transactionsId}</li>
+                    <li>Date of Purchase: ${payment?.date}</li>
+                </ul>
+                <p class="mt-6">Please keep this email for your records.</p>
+                <p>If you have any questions or need further assistance, please don't hesitate to contact us. We look forward to seeing you in the upcoming classes!</p>
+                <p class="mt-6">Best regards,</p>
+                <p>Flavorsome Food School Authority</p>
+            </div>`,
+        },
+        (error, info) => {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(`Email sent: ${info.response}`);
+            }
+        }
+    );
+};
+
 // mongoDB Configurations
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.zzrczzq.mongodb.net/?retryWrites=true&w=majority`;
@@ -74,7 +131,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        // await client.connect();
+        await client.connect();
 
         // collection and db name
         const paymentCollections = client.db('FlavorsomeFoodSchool').collection('Payments');
@@ -635,6 +692,9 @@ async function run() {
                     },
                     updatedDoc
                 );
+
+                // send and email
+                sendConfirmationEmail(payment);
 
                 res.status(201).json({
                     success: true,

@@ -7,6 +7,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import nodemailer from 'nodemailer';
+import mg from 'nodemailer-mailgun-transport';
 import stripePackage from 'stripe';
 // config the dotenv files
 dotenv.config();
@@ -61,21 +62,30 @@ const verifyJWT = async (req, res, next) => {
 };
 
 // nodemailer transporter
-const transporter = nodemailer.createTransport({
-    host: 'smtp.sendgrid.net',
-    port: 587,
+// const transporter = nodemailer.createTransport({
+//     host: 'smtp.sendgrid.net',
+//     port: 587,
+//     auth: {
+//         user: 'apikey',
+//         pass: process.env.SENDGRID_API_KEY,
+//     },
+// });
+// This is your API key that you retrieve from www.mailgun.com/cp (free up to 10K monthly emails)
+const auth = {
     auth: {
-        user: 'apikey',
-        pass: process.env.SENDGRID_API_KEY,
+        api_key: process.env.EMAIL_PRIVATE_KEY,
+        domain: process.env.EMAIL_DOMAIN,
     },
-});
+};
+
+const transporter = nodemailer.createTransport(mg(auth));
 
 // send email for payment confirmation
 const sendConfirmationEmail = (payment) => {
     transporter.sendMail(
         {
-            from: 'flavorsome|food|school|authority@gmail.com', // verified sender email
-            to: payment?.email, // recipient email
+            from: 'Mailgun Sandbox <postmaster@sandboxfa552eb09ffd4e288f1d1fcb21b7b486.mailgun.org>',
+            to: ['ujjalroy7862@gmail.com'], // recipient email
             subject: 'Successful Purchase Confirmation - Flavorsome Food School Classes', // Subject line
             text: `Dear Customer,
 
